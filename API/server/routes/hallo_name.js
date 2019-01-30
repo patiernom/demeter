@@ -6,6 +6,7 @@ exports.plugin = {
         server.route({
             method: 'GET',
             path: '/{name}',
+            config: { auth: false },
             handler: (request, h) => {
 
                 return 'Hello, ' + encodeURIComponent(request.params.name) + '!';

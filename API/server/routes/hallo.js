@@ -1,6 +1,7 @@
 'use strict';
 
 import { path } from 'ramda';
+import { getUser } from'../utils/user';
 
 exports.plugin = {
     name: 'hallo',
@@ -9,13 +10,16 @@ exports.plugin = {
         server.route({
             method: 'GET',
             path: '/',
+            config: { auth: 'jwt' },
             handler: async (request, h) => {
-                const { lowdb } = path(['server', 'plugins'], request);
-                const { db, dsl } = lowdb;
+                const { db } = path(['server', 'plugins', 'lowdb'], request);
 
-                const user = await dsl.getUser(db, 1);
+                const user = await getUser(db, 1);
 
-                return `Hello, world, ${user.username}!`;
+                return h
+                    .response({ message: `Hello, world, ${user.username}!`, text: 'You used a Token!'})
+                    .type('application/json')
+                    .header("Authorization", request.headers.authorization);
             }
         });
     }
