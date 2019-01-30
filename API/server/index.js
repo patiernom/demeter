@@ -2,39 +2,28 @@
 
 import Hapi from 'hapi';
 
-const server = Hapi.server({
-    port: 3000,
-    host: 'localhost'
-});
-
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: (request, h) => {
-
-        return 'Hello, world!';
-    }
-});
-
-server.route({
-    method: 'GET',
-    path: '/{name}',
-    handler: (request, h) => {
-
-        return 'Hello, ' + encodeURIComponent(request.params.name) + '!';
-    }
-});
-
 const init = async () => {
+    const server = Hapi.server({
+        port: 3000,
+        host: 'localhost'
+    });
+
+    await server.register([
+        require('./plugins/lowdbConnector'),
+        require('./routes/hallo'),
+        require('./routes/hallo_name'),
+    ]);
 
     await server.start();
-    console.log(`Server running at: ${server.info.uri}`);
+
+    return server;
 };
 
 process.on('unhandledRejection', (err) => {
-
     console.log(err);
     process.exit(1);
 });
 
-init();
+init()
+    .then((server) => console.log(`Server running at: ${server.info.uri}`))
+    .catch((error) => console.error(`Unable to start the server: ${error}`));
