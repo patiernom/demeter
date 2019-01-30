@@ -1,5 +1,7 @@
 'use strict';
 
+import { path } from 'ramda';
+
 exports.plugin = {
     name: 'hallo',
     version: '1.0.0',
@@ -8,11 +10,10 @@ exports.plugin = {
             method: 'GET',
             path: '/',
             handler: async (request, h) => {
-                const { server } = request;
-                const { plugins } = server;
-                const db = plugins.lowdb.db;
+                const { lowdb } = path(['server', 'plugins'], request);
+                const { db, dsl } = lowdb;
 
-                const user = await plugins.lowdb.dls.getUser(db, 1);
+                const user = await dsl.getUser(db, 1);
 
                 return `Hello, world, ${user.username}!`;
             }

@@ -13,7 +13,7 @@ exports.plugin = {
         const db = await low(adapter);
 
         server.expose('db', db);
-        server.expose('dls', require('../../data/database'));
+        server.expose('dsl', require('../../data/database'));
         // server.plugins.lowdb.other = 'other';
 
         //console.log(server.plugins.lowdb.key);      // 'value'
