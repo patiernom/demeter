@@ -28,8 +28,8 @@ const verifyUniqueUser = (request, h) => {
     return h.response(request.payload);
 };
 
-const verifyCredentials = (request, res) => {
-    const password = req.payload.password;
+const verifyCredentials = (request, h) => {
+    const password = request.payload.password;
 
     // Find an entry from the database that
     // matches either the email or username
