@@ -26,7 +26,7 @@ const init = async () => {
     // We're giving the strategy both a name
     // and scheme of 'jwt'
     await server.register(require('hapi-auth-jwt2'));
-    
+
     server.auth.strategy('jwt', 'jwt', {
         key: 'NeverShareYourSecret',          // Never Share your secret key
         validate: validate,            // validate function defined above
@@ -37,19 +37,20 @@ const init = async () => {
 
     const plugins = [
         require('./plugins/lowdbConnector'),
-        require('./routes/hallo'),
-        require('./routes/hallo_name'),
+        // require('./routes/hallo'),
+        // require('./routes/hallo_name'),
+        // require('./routes/register'),
+        // require('./routes/authenticate'),
     ];
 
-    // Look through the routes in
-    // all the subdirectories of API
-    // and create a new route for each
+    // Look through the routes directory
+    // and create a new route for each file
     const routes = [];
-    // glob.sync('/routes/*.js', {
-    //     root: __dirname
-    // }).forEach((file) => {
-    //     routes.push(require(file.replace(__dirname, '.')));
-    // });
+    glob.sync('/routes/*.js', {
+        root: __dirname
+    }).forEach((file) => {
+        routes.push(require(file.replace(__dirname, '.')));
+    });
 
     await server.register(concat(plugins, routes));
 

@@ -19,40 +19,44 @@ function hashPassword(password, cb) {
 exports.plugin = {
     name: 'register',
     version: '1.0.0',
-    register: async function (server, options) {
+    register: async (server, options) => {
         server.route({
             method: 'POST',
-            path: '/api/register',
+            path: '/api/users/register',
             config: {
                 // Before the route handler runs, verify that the user is unique
                 pre: [
                     { method: verifyUniqueUser }
                 ],
-                handler: (req, res) => {
-                    let user = new User();
-                    user.email = req.payload.email;
-                    user.username = req.payload.username;
-                    user.admin = false;
-                    hashPassword(req.payload.password, (err, hash) => {
-                        if (err) {
-                            throw Boom.badRequest(err);
-                        }
-                        user.password = hash;
-                        user.save((err, user) => {
-                            if (err) {
-                                throw Boom.badRequest(err);
-                            }
-                            // If the user is saved successfully, issue a JWT
-                            res({ id_token: createToken(user) }).code(201);
-                        });
-                    });
-
-                },
                 // Validate the payload against the Joi schema
                 validate: {
                     payload: createUserSchema
                 }
-            }
+            },
+            handler: (request, h) => {
+                let user = new User();
+                user.email = request.payload.email;
+                user.username = request.payload.username;
+                user.admin = false;
+                hashPassword(request.payload.password, (err, hash) => {
+                    if (err) {
+                        throw Boom.badRequest(err);
+                    }
+                    user.password = hash;
+                    user.save((err, user) => {
+                        if (err) {
+                            throw Boom.badRequest(err);
+                        }
+                        // If the user is saved successfully, issue a JWT
+                        return h
+                            .response({ id_token: createToken(user) })
+                            .type('application/json')
+                            .header("Authorization", request.headers.authorization)
+                            .code(201);
+                    });
+                });
+
+            },
         });
     }
 };

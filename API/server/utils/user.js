@@ -64,5 +64,6 @@ const getUser = (req, id) => {
 
 export {
     verifyUniqueUser,
-    verifyCredentials
+    verifyCredentials,
+    getUser,
 };

@@ -2,7 +2,11 @@
   "users": [
     {
       "id": 1,
-      "username": "patiernom"
+      "username": "patiernom",
+      "firstName": "Marco",
+      "lastName": "Patierno",
+      "email": "marco_patierno@msn.com",
+      "admin": true
     }
   ]
 }

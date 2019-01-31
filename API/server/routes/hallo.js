@@ -1,25 +1,22 @@
 'use strict';
 
-import { path } from 'ramda';
 import { getUser } from'../utils/user';
 
 exports.plugin = {
     name: 'hallo',
     version: '1.0.0',
-    register: async function (server, options) {
+    register: async (server, options) => {
         server.route({
             method: 'GET',
             path: '/',
-            config: { auth: 'jwt' },
+            config: { auth: false },
             handler: async (request, h) => {
-                const { db } = path(['server', 'plugins', 'lowdb'], request);
-
-                const user = await getUser(db, 1);
+                const user = await getUser(request, 1);
 
                 return h
-                    .response({ message: `Hello, world, ${user.username}!`, text: 'You used a Token!'})
-                    .type('application/json')
-                    .header("Authorization", request.headers.authorization);
+                    .response({
+                        message: `Hello, world, ${user.firstName} ${user.lastName} alias ${user.username}!`,
+                        text: `You don\'t used a Token!`});
             }
         });
     }

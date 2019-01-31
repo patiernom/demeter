@@ -2,7 +2,7 @@
 exports.plugin = {
     name: 'hallo name',
     version: '1.0.0',
-    register: async function (server, options) {
+    register: async (server, options) => {
         server.route({
             method: 'GET',
             path: '/{name}',
