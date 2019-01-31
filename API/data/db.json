@@ -1,12 +1,18 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "d80427fc2106c339eda3",
       "username": "patiernom",
       "firstName": "Marco",
       "lastName": "Patierno",
       "email": "marco_patierno@msn.com",
       "admin": true
+    },
+    {
+      "id": "37315e29b9525fae93c4",
+      "username": "gino",
+      "email": "marco85patierno@gmail.com",
+      "admin": false
     }
   ]
 }

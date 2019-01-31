@@ -28,6 +28,7 @@ exports.plugin = {
             method: 'POST',
             path: '/api/users/register',
             config: {
+                auth: false,
                 // Before the route handler runs, verify that the user is unique
                 pre: [
                     { method: verifyUniqueUser }
@@ -49,7 +50,7 @@ exports.plugin = {
                 if (!newUser) {
                     throw Boom.badImplementation("User not created");
                 }
-                
+
                 // If the user is saved successfully, issue a JWT
                 return h
                     .response({ id_token: createToken(user) })

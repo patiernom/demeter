@@ -4,52 +4,52 @@ import Boom from 'boom';
 import bcrypt from 'bcrypt';
 import { path } from "ramda";
 
-const verifyUniqueUser = (req, res) => {
+const verifyUniqueUser = (request, h) => {
     // Find an entry from the database that
     // matches either the email or username
-    const { db } = path(['server', 'plugins', 'lowdb'], req);
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
 
     const user = db.get('users')
-        .find((user) => user.email === req.payload.email || user.username === req.payload.username)
+        .find((user) => user.email === request.payload.email || user.username === request.payload.username)
         .value();
 
     // Check whether the username or email
     // is already taken and error out if so
     if (user) {
-        if (user.username === req.payload.username) {
-            res(Boom.badRequest('Username taken'));
+        if (user.username === request.payload.username) {
+            throw Boom.badRequest('Username taken');
         }
-        if (user.email === req.payload.email) {
-            res(Boom.badRequest('Email taken'));
+        if (user.email === request.payload.email) {
+            throw Boom.badRequest('Email taken');
         }
     }
     // If everything checks out, send the payload through
     // to the route handler
-    res(req.payload);
+    return h.response(request.payload);
 };
 
-const verifyCredentials = (req, res) => {
+const verifyCredentials = (request, res) => {
     const password = req.payload.password;
 
     // Find an entry from the database that
     // matches either the email or username
-    const { db } = path(['server', 'plugins', 'lowdb'], req);
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
 
     const user = db.get('users')
-        .find((user) => user.email === req.payload.email || user.username === req.payload.username)
+        .find((user) => user.email === request.payload.email || user.username === request.payload.username)
         .value();
 
     if (user) {
         bcrypt.compare(password, user.password, (err, isValid) => {
             if (isValid) {
-                res(user);
+                return h.response(user);
             }
             else {
-                res(Boom.badRequest('Incorrect password!'));
+                throw Boom.badRequest('Incorrect password!');
             }
         });
     } else {
-        res(Boom.badRequest('Incorrect username or email!'));
+        throw Boom.badRequest('Incorrect username or email!');
     }
 };
 
@@ -65,7 +65,7 @@ const getUser = async (req, id) => {
 const addUser = async (req, newUser) => {
     const { db } = path(['server', 'plugins', 'lowdb'], req);
 
-    const user = db
+    const user = await db
         .get('users')
         .push(newUser)
         .last()
