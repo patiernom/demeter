@@ -53,7 +53,7 @@ const verifyCredentials = (req, res) => {
     }
 };
 
-const getUser = (req, id) => {
+const getUser = async (req, id) => {
     const { db } = path(['server', 'plugins', 'lowdb'], req);
 
     return db
@@ -62,8 +62,21 @@ const getUser = (req, id) => {
         .value();
 };
 
+const addUser = async (req, newUser) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], req);
+
+    const user = db
+        .get('users')
+        .push(newUser)
+        .last()
+        .write();
+
+    return user.id;
+};
+
 export {
     verifyUniqueUser,
     verifyCredentials,
     getUser,
+    addUser,
 };
