@@ -24,7 +24,7 @@ exports.plugin = {
                 // If the user's password is correct, we can issue a token.
                 // If it was incorrect, the error will bubble up from the pre method
                 return h
-                    .response({ id_token: createToken(req.pre.user) })
+                    .response({ id_token: createToken(request.pre.user) })
                     .type('application/json')
                     .header("Authorization", request.headers.authorization)
                     .code(201);

@@ -1,24 +1,12 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
 import Boom from 'boom';
 import User from '../models/User';
 import createUserSchema from '../schemas/createUser';
 import { verifyUniqueUser, addUser } from'../utils/user';
 import createToken from '../utils/token';
+import hashPassword from '../utils/token';
 
-const hashPassword = async (password, cb) => {
-    // Generate a salt at level 10 strength
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, (err, hash) => {
-            if (err) {
-                throw Boom.badRequest(err);
-            }
-
-            return hash;
-        });
-    });
-};
 
 exports.plugin = {
     name: 'register',
@@ -43,7 +31,14 @@ exports.plugin = {
                 user.email = request.payload.email;
                 user.username = request.payload.username;
                 user.admin = false;
-                user.password = await hashPassword(request.payload.password);
+
+                try {
+                    const password = await hashPassword(request.payload.password);
+
+                    user.password = password;
+                } catch (err) {
+                    throw Boom.badRequest(err);
+                }
 
                 const newUser = await addUser(request, user);
 
@@ -57,7 +52,6 @@ exports.plugin = {
                     .type('application/json')
                     .header("Authorization", request.headers.authorization)
                     .code(201);
-
             },
         });
     }
