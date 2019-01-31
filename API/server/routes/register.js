@@ -5,7 +5,7 @@ import User from '../models/User';
 import createUserSchema from '../schemas/createUser';
 import { verifyUniqueUser, addUser } from'../utils/user';
 import createToken from '../utils/token';
-import hashPassword from '../utils/token';
+import hashPassword from '../utils/password';
 
 
 exports.plugin = {
@@ -52,6 +52,7 @@ exports.plugin = {
                     .type('application/json')
                     .header("Authorization", request.headers.authorization)
                     .code(201);
+
             },
         });
     }

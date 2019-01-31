@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-const hashPassword = async (password, cb) => {
+const hashPassword = async (password) => {
     const saltRounds = 10;
 
     // Generate a salt at level 10 strength
@@ -14,9 +14,7 @@ const hashPassword = async (password, cb) => {
         });
     });
 
-    return hashedPassword
+    return hashedPassword;
 };
 
-export {
-    hashPassword
-}
+module.exports = hashPassword;
