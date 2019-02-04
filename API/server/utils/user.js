@@ -2,7 +2,7 @@
 
 import Boom from 'boom';
 import bcrypt from 'bcrypt';
-import { path } from "ramda";
+import { path, omit } from "ramda";
 
 const verifyUniqueUser = (request, h) => {
     // Find an entry from the database that
@@ -12,6 +12,8 @@ const verifyUniqueUser = (request, h) => {
     const user = db.get('users')
         .find((user) => user.email === request.payload.email || user.username === request.payload.username)
         .value();
+
+    console.log('verifyUniqueUser', user);
 
     // Check whether the username or email
     // is already taken and error out if so
@@ -28,7 +30,7 @@ const verifyUniqueUser = (request, h) => {
     return h.response(request.payload);
 };
 
-const verifyCredentials = (request, h) => {
+const verifyCredentials = async (request, h) => {
     const password = request.payload.password;
 
     // Find an entry from the database that
@@ -40,14 +42,19 @@ const verifyCredentials = (request, h) => {
         .value();
 
     if (user) {
-        bcrypt.compare(password, user.password, (err, isValid) => {
-            if (isValid) {
-                return h.response(user);
-            }
-            else {
-                throw Boom.badRequest('Incorrect password!');
-            }
-        });
+        console.log('verifyCredentials 2', user);
+        return bcrypt
+            .compare(password, user.password)
+            .then((isValid) => {
+                if (isValid) {
+                    return h.response(user);
+                }
+
+                else {
+                    throw Boom.badRequest('Incorrect password!');
+                }
+            })
+            .catch((err)=> Boom.badImplementation(err));
     } else {
         throw Boom.badRequest('Incorrect username or email!');
     }
@@ -59,6 +66,15 @@ const getUser = async (req, id) => {
     return db
         .get('users')
         .find(user => user.id === id)
+        .value();
+};
+
+const getUsersList = async (req) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], req);
+
+    return db
+        .get('users')
+        .map((user) => omit(['password'], user))
         .value();
 };
 
@@ -79,4 +95,5 @@ export {
     verifyCredentials,
     getUser,
     addUser,
+    getUsersList,
 };

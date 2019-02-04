@@ -1,19 +1,20 @@
 {
   "users": [
     {
-      "id": "d80427fc2106c339eda3",
-      "username": "patiernom",
-      "firstName": "Marco",
-      "lastName": "Patierno",
-      "email": "marco_patierno@msn.com",
-      "admin": true
-    },
-    {
       "id": "4a744cb632c558474d66",
       "username": "gino",
       "password": "$2b$10$EETE9JArrPR8TP6zOMjlheGcCB.IWfSHCL6TtJh.PO9mnIwYpDajW",
       "email": "marco85patierno@gmail.com",
       "admin": false
+    },
+    {
+      "id": "837e5b422a5b2d624cf4",
+      "username": "patiernom",
+      "firstName": "Marco",
+      "lastName": "Patierno",
+      "password": "$2b$10$4eS7PRlS3fr2InAsyJzpcOFy8vcorAMQZ3Qdy2VEEzIOyLJv..7Iq",
+      "email": "marco_patierno@msn.com",
+      "admin": true
     }
   ]
 }

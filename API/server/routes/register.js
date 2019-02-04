@@ -7,7 +7,6 @@ import { verifyUniqueUser, addUser } from'../utils/user';
 import createToken from '../utils/token';
 import hashPassword from '../utils/password';
 
-
 exports.plugin = {
     name: 'register',
     version: '1.0.0',
