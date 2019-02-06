@@ -1,7 +1,7 @@
 'use strict';
 
 import jwt from 'jsonwebtoken';
-import pkg from '../../package';
+import pkg from '../../../package';
 
 function createToken(user) {
     let scopes;

@@ -1,8 +1,11 @@
 'use strict';
 
 import Joi from "joi";
-import userSchema from '../schemas/user';
-import { getUserByUsername } from'../utils/user';
+
+import userSchema from '../../schemas/user/user';
+import headersSchema from '../../schemas/authenticate/headers';
+import { getUserByUsername } from '../../utils/user';
+import { failAction } from "../../utils/common";
 
 exports.plugin = {
     name: 'user',
@@ -21,22 +24,14 @@ exports.plugin = {
                 notes: 'Returns the details of the users if your scope is admin',
                 response: {
                     schema: userSchema,
-                    failAction: async (request, h, err) => {
-                        console.error('ValidationError:', err);
-                        throw Boom.badRequest(`Invalid request payload input ${err.message}`);
-                    }
+                    failAction,
                 },
                 validate: {
                     params: {
                         username: Joi.string().required().description('username')
                     },
-                    headers: Joi.object({
-                        authorization: Joi.string().required().description('session token'),
-                    }).pattern(/./, Joi.any()),
-                    failAction: async (request, h, err) => {
-                            console.error('ValidationError:', err);
-                            throw Boom.badRequest(`Invalid request payload input ${err.message}`);
-                    }
+                    headers: headersSchema,
+                    failAction,
                 },
             },
             handler: async (request, h) => {

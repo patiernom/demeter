@@ -15,6 +15,13 @@
       "password": "$2b$10$4eS7PRlS3fr2InAsyJzpcOFy8vcorAMQZ3Qdy2VEEzIOyLJv..7Iq",
       "email": "marco_patierno@msn.com",
       "admin": true
+    },
+    {
+      "id": "3d7e26e07d59b0f3177f",
+      "username": "ginopino",
+      "password": "$2b$10$dyX7gvH/fwU4E6RWHga/wOo.RcwhsgIyzdQ7sFN1.62eN11Aqk2fa",
+      "email": "m.patierno@blabla.com",
+      "admin": false
     }
   ]
 }

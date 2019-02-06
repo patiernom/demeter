@@ -48,7 +48,7 @@ const init = async () => {
 
     // Look through the routes directory
     // and create a new route for each file
-    forEach(addRoute, glob.sync('/routes/*.js', { root: __dirname }));
+    forEach(addRoute, glob.sync('/routes/**/*.js', { root: __dirname }));
 
     await server.register(concat(plugins, routes));
 

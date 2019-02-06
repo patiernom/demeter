@@ -1,12 +1,14 @@
 'use strict';
 
 import Boom from 'boom';
-import User from '../models/User';
-import createUserSchema from '../schemas/createUser';
-import { verifyUniqueUser, addUser } from'../utils/user';
-import createToken from '../utils/token';
-import hashPassword from '../utils/password';
-import tokenAuth from "../schemas/token";
+
+import User from '../../models/User';
+import createUserSchema from '../../schemas/authenticate/createUser';
+import tokenAuthSchema from "../../schemas/authenticate/token";
+import createToken from '../../utils/authenticate/token';
+import hashPassword from '../../utils/authenticate/password';
+import { verifyUniqueUser, addUser } from '../../utils/user';
+import { failAction}  from "../../utils/common";
 
 exports.plugin = {
     name: 'register',
@@ -23,13 +25,15 @@ exports.plugin = {
                 ],
                 // Validate the payload against the Joi schema
                 validate: {
-                    payload: createUserSchema
+                    payload: createUserSchema,
+                    failAction,
                 },
                 tags: ['api'],
                 description: 'Register a new user',
                 notes: 'Returns the token for the new user',
                 response: {
-                    schema: tokenAuth,
+                    schema: tokenAuthSchema,
+                    failAction,
                 },
             },
             handler: async (request, h) => {

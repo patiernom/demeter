@@ -1,9 +1,10 @@
 'use strict';
 
-import authenticateUserSchema from '../schemas/authenticateUser';
-import { verifyCredentials } from'../utils/user';
-import createToken from '../utils/token';
-import tokenAuth from "../schemas/token";
+import createToken from '../../utils/authenticate/token';
+import tokenAuthSchema from "../../schemas/authenticate/token";
+import authenticateUserSchema from '../../schemas/authenticate/authenticateUser';
+import { verifyCredentials } from '../../utils/user';
+import { failAction } from "../../utils/common";
 
 exports.plugin = {
     name: 'authenticate',
@@ -19,13 +20,15 @@ exports.plugin = {
                     { method: verifyCredentials, assign: 'user' }
                 ],
                 validate: {
-                    payload: authenticateUserSchema
+                    payload: authenticateUserSchema,
+                    failAction,
                 },
                 tags: ['api'],
                 description: 'Authenticate a user',
                 notes: 'Returns the token for the user',
                 response: {
-                    schema: tokenAuth,
+                    schema: tokenAuthSchema,
+                    failAction,
                 },
             },
             handler: (request, h) => {
