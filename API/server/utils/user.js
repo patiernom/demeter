@@ -13,8 +13,6 @@ const verifyUniqueUser = (request, h) => {
         .find((user) => user.email === request.payload.email || user.username === request.payload.username)
         .value();
 
-    console.log('verifyUniqueUser', user);
-
     // Check whether the username or email
     // is already taken and error out if so
     if (user) {
@@ -62,21 +60,23 @@ const verifyCredentials = (request, h) => {
 const getUserById = async (request, id) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
 
-    return db
+    const user = await db
         .get('users')
         .find(user => user.id === id)
-        .map((user) => omit(['password'], user))
         .value();
+
+    return omit(['password'], user);
 };
 
 const getUserByUsername = async (request, username) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
 
-    return db
+    const user = await db
         .get('users')
         .find(user => user.username === username)
-        .map((user) => omit(['password'], user))
         .value();
+
+    return omit(['password'], user);
 };
 
 const getUsersList = async (request) => {

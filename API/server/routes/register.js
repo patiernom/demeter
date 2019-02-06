@@ -6,7 +6,7 @@ import createUserSchema from '../schemas/createUser';
 import { verifyUniqueUser, addUser } from'../utils/user';
 import createToken from '../utils/token';
 import hashPassword from '../utils/password';
-import authResponseSchema from "../schemas/authResponse";
+import tokenAuth from "../schemas/token";
 
 exports.plugin = {
     name: 'register',
@@ -29,7 +29,7 @@ exports.plugin = {
                 description: 'Register a new user',
                 notes: 'Returns the token for the new user',
                 response: {
-                    schema: authResponseSchema,
+                    schema: tokenAuth,
                 },
             },
             handler: async (request, h) => {
@@ -56,7 +56,7 @@ exports.plugin = {
                 return h
                     .response({ id_token: createToken(user) })
                     .type('application/json')
-                    .header("Authorization", request.headers.authorization)
+                    .header("authorization", request.headers.authorization)
                     .code(201);
 
             },

@@ -2,19 +2,38 @@
 
 import Hapi from 'hapi';
 import glob from 'glob';
-import { concat } from 'ramda';
-import Inert from'inert';
-import Vision from'vision';
-import HapiSwagger from 'hapi-swagger';
+import { concat, forEach } from 'ramda';
+
 import pkg from '../package';
 import { validate } from './utils/user';
 
-const init = async () => {
-    const server = Hapi.server({
-        port: 3000,
-        host: 'localhost'
-    });
+const server = Hapi.server({
+    port: 3000,
+    host: 'localhost'
+});
 
+const swaggerOptions = {
+    info: {
+        title: 'Demeter API Documentation',
+        version: pkg.version,
+    },
+};
+
+const plugins = [
+    require('./plugins/lowdbConnector'),
+    require('inert'),
+    require('vision'),
+    {
+        plugin: require('hapi-swagger'),
+        options: swaggerOptions
+    },
+    // require('./routes/authenticate'),
+];
+
+const routes = [];
+const addRoute = (file) => routes.push(require(file.replace(__dirname, '.')));
+
+const init = async () => {
     // We're giving the strategy both a name
     // and scheme of 'jwt'
     await server.register(require('hapi-auth-jwt2'));
@@ -27,32 +46,12 @@ const init = async () => {
 
     server.auth.default('jwt');
 
-    const swaggerOptions = {
-        info: {
-            title: 'Demeter API Documentation',
-            version: pkg.version,
-        },
-    };
-
-    const plugins = [
-        require('./plugins/lowdbConnector'),
-        Inert,
-        Vision,
-        {
-            plugin: HapiSwagger,
-            options: swaggerOptions
-        },
-        // require('./routes/authenticate'),
-    ];
-
     // Look through the routes directory
     // and create a new route for each file
-    const routes = [];
-    const addRoute = (file) => routes.push(require(file.replace(__dirname, '.')));
-
-    glob.sync('/routes/*.js', { root: __dirname }).forEach(addRoute);
+    forEach(addRoute, glob.sync('/routes/*.js', { root: __dirname }));
 
     await server.register(concat(plugins, routes));
+
     await server.start();
 
     return server;

@@ -3,7 +3,7 @@
 import authenticateUserSchema from '../schemas/authenticateUser';
 import { verifyCredentials } from'../utils/user';
 import createToken from '../utils/token';
-import authResponseSchema from "../schemas/authResponse";
+import tokenAuth from "../schemas/token";
 
 exports.plugin = {
     name: 'authenticate',
@@ -25,16 +25,17 @@ exports.plugin = {
                 description: 'Authenticate a user',
                 notes: 'Returns the token for the user',
                 response: {
-                    schema: authResponseSchema,
+                    schema: tokenAuth,
                 },
             },
             handler: (request, h) => {
                 // If the user's password is correct, we can issue a token.
                 // If it was incorrect, the error will bubble up from the pre method
+
                 return h
                     .response({ id_token: createToken(request.pre.user) })
                     .type('application/json')
-                    .header("Authorization", request.headers.authorization)
+                    .header("authorization", request.headers.authorization)
                     .code(201);
             },
         });

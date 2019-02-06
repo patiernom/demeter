@@ -21,21 +21,34 @@ exports.plugin = {
                 notes: 'Returns the details of the users if your scope is admin',
                 response: {
                     schema: userSchema,
+                    failAction: async (request, h, err) => {
+                        console.error('ValidationError:', err);
+                        throw Boom.badRequest(`Invalid request payload input ${err.message}`);
+                    }
                 },
                 validate: {
                     params: {
                         username: Joi.string().required().description('username')
                     },
-                    headers: {
-                        Authorization: Joi.string().required().description('session token')
-                    },
+                    headers: Joi.object({
+                        authorization: Joi.string().required().description('session token'),
+                    }).pattern(/./, Joi.any()),
+                    failAction: async (request, h, err) => {
+                            console.error('ValidationError:', err);
+                            throw Boom.badRequest(`Invalid request payload input ${err.message}`);
+                    }
                 },
             },
             handler: async (request, h) => {
                 const user = await getUserByUsername(request, request.params.username);
 
+                console.log('user', user);
+
                 return h
-                    .response({message: `Hello, world, ${user.firstName} ${user.lastName} alias ${user.username}!`});
+                    .response(user)
+                    .type('application/json')
+                    .header("authorization", request.headers.authorization)
+                    .code(201);
             }
         });
     }

@@ -22,6 +22,19 @@ exports.plugin = {
                 notes: 'Returns the list of the users if your scope is admin',
                 response: {
                     schema: usersSchema,
+                    failAction: async (request, h, err) => {
+                        console.error('ValidationError:', err);
+                        throw Boom.badRequest(`Invalid request payload input ${err.message}`);
+                    }
+                },
+                validate: {
+                    headers: Joi.object({
+                        authorization: Joi.string().required().description('session token'),
+                    }).pattern(/./, Joi.any()),
+                    failAction: async (request, h, err) => {
+                        console.error('ValidationError:', err);
+                        throw Boom.badRequest(`Invalid request payload input ${err.message}`);
+                    }
                 },
             },
             handler: async (request, h) => {
@@ -35,7 +48,7 @@ exports.plugin = {
                 return h
                     .response({ users: users })
                     .type('application/json')
-                    //.header("Authorization", request.headers.authorization)
+                    .header("authorization", request.headers.authorization)
                     .code(201);
             },
         });
