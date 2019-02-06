@@ -6,6 +6,7 @@ import createUserSchema from '../schemas/createUser';
 import { verifyUniqueUser, addUser } from'../utils/user';
 import createToken from '../utils/token';
 import hashPassword from '../utils/password';
+import authResponseSchema from "../schemas/authResponse";
 
 exports.plugin = {
     name: 'register',
@@ -23,7 +24,13 @@ exports.plugin = {
                 // Validate the payload against the Joi schema
                 validate: {
                     payload: createUserSchema
-                }
+                },
+                tags: ['api'],
+                description: 'Register a new user',
+                notes: 'Returns the token for the new user',
+                response: {
+                    schema: authResponseSchema,
+                },
             },
             handler: async (request, h) => {
                 let user = new User();

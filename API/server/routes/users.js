@@ -1,6 +1,8 @@
 'use strict';
 
 import Boom from 'boom';
+import Joi from'joi';
+import usersSchema from '../schemas/users';
 import { getUsersList } from'../utils/user';
 
 exports.plugin = {
@@ -14,7 +16,13 @@ exports.plugin = {
                 auth: {
                     strategy: 'jwt',
                     scope: ['admin']
-                }
+                },
+                tags: ['api'],
+                description: 'Get the list of the users',
+                notes: 'Returns the list of the users if your scope is admin',
+                response: {
+                    schema: usersSchema,
+                },
             },
             handler: async (request, h) => {
                 const users = await getUsersList(request);
@@ -27,7 +35,7 @@ exports.plugin = {
                 return h
                     .response({ users: users })
                     .type('application/json')
-                    .header("Authorization", request.headers.authorization)
+                    //.header("Authorization", request.headers.authorization)
                     .code(201);
             },
         });

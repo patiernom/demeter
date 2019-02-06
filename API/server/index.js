@@ -3,19 +3,11 @@
 import Hapi from 'hapi';
 import glob from 'glob';
 import { concat } from 'ramda';
-import { getUser } from'./utils/user';
-
-// bring your own validation function
-const validate = async function (decoded, request) {
-
-    // do your checks to see if the person is valid
-    if (!getUser(request, decoded.id)) {
-        return { isValid: false };
-    }
-    else {
-        return { isValid: true };
-    }
-};
+import Inert from'inert';
+import Vision from'vision';
+import HapiSwagger from 'hapi-swagger';
+import pkg from '../package';
+import { validate } from './utils/user';
 
 const init = async () => {
     const server = Hapi.server({
@@ -28,32 +20,39 @@ const init = async () => {
     await server.register(require('hapi-auth-jwt2'));
 
     server.auth.strategy('jwt', 'jwt', {
-        key: 'NeverShareYourSecret',          // Never Share your secret key
+        key: pkg.privateKey,          // Never Share your secret key
         validate: validate,            // validate function defined above
         verifyOptions: { algorithms: [ 'HS256' ] } // pick a strong algorithm
     });
 
     server.auth.default('jwt');
 
+    const swaggerOptions = {
+        info: {
+            title: 'Demeter API Documentation',
+            version: pkg.version,
+        },
+    };
+
     const plugins = [
         require('./plugins/lowdbConnector'),
-        // require('./routes/hallo'),
-        // require('./routes/hallo_name'),
-        // require('./routes/register'),
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        },
         // require('./routes/authenticate'),
     ];
 
     // Look through the routes directory
     // and create a new route for each file
     const routes = [];
-    glob.sync('/routes/*.js', {
-        root: __dirname
-    }).forEach((file) => {
-        routes.push(require(file.replace(__dirname, '.')));
-    });
+    const addRoute = (file) => routes.push(require(file.replace(__dirname, '.')));
+
+    glob.sync('/routes/*.js', { root: __dirname }).forEach(addRoute);
 
     await server.register(concat(plugins, routes));
-
     await server.start();
 
     return server;

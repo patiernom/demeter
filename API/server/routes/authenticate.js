@@ -3,6 +3,7 @@
 import authenticateUserSchema from '../schemas/authenticateUser';
 import { verifyCredentials } from'../utils/user';
 import createToken from '../utils/token';
+import authResponseSchema from "../schemas/authResponse";
 
 exports.plugin = {
     name: 'authenticate',
@@ -19,7 +20,13 @@ exports.plugin = {
                 ],
                 validate: {
                     payload: authenticateUserSchema
-                }
+                },
+                tags: ['api'],
+                description: 'Authenticate a user',
+                notes: 'Returns the token for the user',
+                response: {
+                    schema: authResponseSchema,
+                },
             },
             handler: (request, h) => {
                 // If the user's password is correct, we can issue a token.

@@ -1,8 +1,7 @@
 'use strict';
 
 import jwt from 'jsonwebtoken';
-
-const secret = 'NeverShareYourSecret';
+import pkg from '../../package';
 
 function createToken(user) {
     let scopes;
@@ -15,7 +14,7 @@ function createToken(user) {
 
     // Sign the JWT
     return jwt.sign(
-        { id: user.id, username: user.username, scope: scopes }, secret,
+        { id: user.id, username: user.username, scope: scopes }, pkg.privateKey,
         { algorithm: 'HS256', expiresIn: "1h" });
 }
 

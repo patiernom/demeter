@@ -30,7 +30,7 @@ const verifyUniqueUser = (request, h) => {
     return h.response(request.payload);
 };
 
-const verifyCredentials = async (request, h) => {
+const verifyCredentials = (request, h) => {
     const password = request.payload.password;
 
     // Find an entry from the database that
@@ -42,7 +42,6 @@ const verifyCredentials = async (request, h) => {
         .value();
 
     if (user) {
-        console.log('verifyCredentials 2', user);
         return bcrypt
             .compare(password, user.password)
             .then((isValid) => {
@@ -60,17 +59,28 @@ const verifyCredentials = async (request, h) => {
     }
 };
 
-const getUser = async (req, id) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], req);
+const getUserById = async (request, id) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
 
     return db
         .get('users')
         .find(user => user.id === id)
+        .map((user) => omit(['password'], user))
         .value();
 };
 
-const getUsersList = async (req) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], req);
+const getUserByUsername = async (request, username) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
+
+    return db
+        .get('users')
+        .find(user => user.username === username)
+        .map((user) => omit(['password'], user))
+        .value();
+};
+
+const getUsersList = async (request) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
 
     return db
         .get('users')
@@ -78,8 +88,8 @@ const getUsersList = async (req) => {
         .value();
 };
 
-const addUser = async (req, newUser) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], req);
+const addUser = async (request, newUser) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
 
     const user = await db
         .get('users')
@@ -90,10 +100,23 @@ const addUser = async (req, newUser) => {
     return user.id;
 };
 
+// bring your own validation function
+const validate = async function (decoded, request) {
+    // do your checks to see if the person is valid
+    if (!getUserById(request, decoded.id)) {
+        return { isValid: false };
+    }
+    else {
+        return { isValid: true };
+    }
+};
+
 export {
     verifyUniqueUser,
     verifyCredentials,
-    getUser,
+    getUserById,
+    getUserByUsername,
     addUser,
     getUsersList,
+    validate,
 };

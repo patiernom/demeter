@@ -1,16 +1,13 @@
 
 exports.plugin = {
-    name: 'hallo name',
+    name: 'status',
     version: '1.0.0',
     register: async (server, options) => {
         server.route({
             method: 'GET',
-            path: '/{name}',
+            path: '/{whatever}',
             config: { auth: false },
-            handler: (request, h) => {
-
-                return 'Hello, ' + encodeURIComponent(request.params.name) + '!';
-            }
+            handler: (request, h) => h.response('Hello, ' + encodeURIComponent(request.params.whatever) + '!\nStatus OK!!'),
         });
     }
 };
