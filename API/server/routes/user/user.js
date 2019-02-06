@@ -2,8 +2,8 @@
 
 import Joi from "joi";
 
-import userSchema from '../../schemas/user/user';
-import headersSchema from '../../schemas/authenticate/headers';
+import { userSchema } from '../../schemas/user';
+import { headersSchema } from '../../schemas/authenticate';
 import { getUserByUsername } from '../../utils/user';
 import { failAction } from "../../utils/common";
 

@@ -2,8 +2,8 @@
 
 import Boom from 'boom';
 
-import usersSchema from '../../schemas/user/users';
-import headersSchema from "../../schemas/authenticate/headers";
+import { usersSchema } from '../../schemas/user';
+import { headersSchema } from '../../schemas/authenticate';
 import { getUsersList } from '../../utils/user';
 import { failAction } from "../../utils/common";
 

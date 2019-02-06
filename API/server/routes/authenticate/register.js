@@ -3,12 +3,10 @@
 import Boom from 'boom';
 
 import User from '../../models/User';
-import createUserSchema from '../../schemas/authenticate/createUser';
-import tokenAuthSchema from "../../schemas/authenticate/token";
-import createToken from '../../utils/authenticate/token';
-import hashPassword from '../../utils/authenticate/password';
-import { verifyUniqueUser, addUser } from '../../utils/user';
-import { failAction}  from "../../utils/common";
+import { tokenAuthSchema, createUserSchema } from '../../schemas/authenticate';
+import { createToken, hashPassword, verifyUniqueUser } from '../../utils/authenticate';
+import { addUser } from '../../utils/user';
+import { failAction }  from "../../utils/common";
 
 exports.plugin = {
     name: 'register',

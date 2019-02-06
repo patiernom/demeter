@@ -1,9 +1,7 @@
 'use strict';
 
-import createToken from '../../utils/authenticate/token';
-import tokenAuthSchema from "../../schemas/authenticate/token";
-import authenticateUserSchema from '../../schemas/authenticate/authenticateUser';
-import { verifyCredentials } from '../../utils/user';
+import { tokenAuthSchema, authenticateUserSchema } from '../../schemas/authenticate';
+import { createToken, verifyCredentials } from '../../utils/authenticate';
 import { failAction } from "../../utils/common";
 
 exports.plugin = {
