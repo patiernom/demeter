@@ -22,6 +22,13 @@
       "password": "$2b$10$dyX7gvH/fwU4E6RWHga/wOo.RcwhsgIyzdQ7sFN1.62eN11Aqk2fa",
       "email": "m.patierno@blabla.com",
       "admin": false
+    },
+    {
+      "id": "cf1f6027f5b01b56ae36",
+      "username": "cretino",
+      "password": "$2b$10$hBp2F78dpQ1FenMVOK5CIe81d/lE3G16I6cTpjg/QBawQeA3x3jpO",
+      "email": "asdasd@blabla.com",
+      "admin": false
     }
   ],
   "menus": [
@@ -29,7 +36,10 @@
       "id": "3d7e26e07d59b0f3177f",
       "idUser": "837e5b422a5b2d624cf4",
       "name": "menu test",
-      "dishes": ["dish 1", "dish 2"]
+      "dishes": [
+        "dish 1",
+        "dish 2"
+      ]
     }
   ]
 }

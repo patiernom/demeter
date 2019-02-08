@@ -2,9 +2,8 @@
 
 import Boom from 'boom';
 
-import User from '../../models/User';
 import { tokenAuthSchema, createUserSchema } from '../../schemas/authenticate';
-import { createToken, hashPassword  } from '../../utils/authenticate';
+import { createToken  } from '../../utils/authenticate';
 import { addUser } from '../../middlewares/user';
 import { verifyUniqueUser } from '../../middlewares/authenticate';
 import { failAction }  from "../../utils/common";
@@ -17,6 +16,9 @@ exports.plugin = {
             method: 'POST',
             path: '/api/users/register',
             config: {
+                tags: ['api','authenticate'],
+                description: 'Register a new user',
+                notes: 'Returns the token for the new user',
                 auth: false,
                 // Before the route handler runs, verify that the user is unique
                 pre: [
@@ -27,31 +29,15 @@ exports.plugin = {
                     payload: createUserSchema,
                     failAction,
                 },
-                tags: ['api','authenticate'],
-                description: 'Register a new user',
-                notes: 'Returns the token for the new user',
                 response: {
                     schema: tokenAuthSchema,
                     failAction,
                 },
             },
             handler: async (request, h) => {
-                let user = new User();
-                user.email = request.payload.email;
-                user.username = request.payload.username;
-                user.admin = false;
+                const user = await addUser(request);
 
-                try {
-                    const password = await hashPassword(request.payload.password);
-
-                    user.password = password;
-                } catch (err) {
-                    throw Boom.badRequest(err);
-                }
-
-                const newUser = await addUser(request, user);
-
-                if (!newUser) {
+                if (!user) {
                     throw Boom.badImplementation("User not created");
                 }
 

@@ -13,6 +13,9 @@ exports.plugin = {
             method: 'POST',
             path: '/api/users/authenticate',
             config: {
+                tags: ['api','authenticate'],
+                description: 'Authenticate a user',
+                notes: 'Returns the token for the user',
                 auth: false,
                 // Check the user's password against the DB
                 pre: [
@@ -22,9 +25,6 @@ exports.plugin = {
                     payload: authenticateUserSchema,
                     failAction,
                 },
-                tags: ['api','authenticate'],
-                description: 'Authenticate a user',
-                notes: 'Returns the token for the user',
                 response: {
                     schema: tokenAuthSchema,
                     failAction,

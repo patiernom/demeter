@@ -1,6 +1,9 @@
 'use strict';
 
+import Boom from "boom";
 import { path, omit } from "ramda";
+import User from "../models/User";
+import { hashPassword } from "../utils/authenticate";
 
 const getUserById = async (request, id) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
@@ -33,8 +36,19 @@ const getUsersList = async (request) => {
         .value();
 };
 
-const addUser = async (request, newUser) => {
+const addUser = async (request) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
+
+    let newUser = new User();
+    newUser.email = request.payload.email;
+    newUser.username = request.payload.username;
+    newUser.admin = false;
+
+    try {
+        newUser.password = await hashPassword(request.payload.password);
+    } catch (err) {
+        throw Boom.badRequest(err);
+    }
 
     const user = await db
         .get('users')
