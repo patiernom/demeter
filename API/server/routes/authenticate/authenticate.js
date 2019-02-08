@@ -1,8 +1,9 @@
 'use strict';
 
 import { tokenAuthSchema, authenticateUserSchema } from '../../schemas/authenticate';
-import { createToken, verifyCredentials } from '../../utils/authenticate';
+import { verifyCredentials } from '../../middlewares/authenticate';
 import { failAction } from "../../utils/common";
+import { createToken } from "../../utils/authenticate";
 
 exports.plugin = {
     name: 'authenticate',
@@ -21,7 +22,7 @@ exports.plugin = {
                     payload: authenticateUserSchema,
                     failAction,
                 },
-                tags: ['api'],
+                tags: ['api','authenticate'],
                 description: 'Authenticate a user',
                 notes: 'Returns the token for the user',
                 response: {

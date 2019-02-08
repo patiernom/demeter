@@ -23,5 +23,13 @@
       "email": "m.patierno@blabla.com",
       "admin": false
     }
+  ],
+  "menus": [
+    {
+      "id": "3d7e26e07d59b0f3177f",
+      "idUser": "837e5b422a5b2d624cf4",
+      "name": "menu test",
+      "dishes": ["dish 1", "dish 2"]
+    }
   ]
 }

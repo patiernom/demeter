@@ -4,8 +4,9 @@ import Boom from 'boom';
 
 import User from '../../models/User';
 import { tokenAuthSchema, createUserSchema } from '../../schemas/authenticate';
-import { createToken, hashPassword, verifyUniqueUser } from '../../utils/authenticate';
-import { addUser } from '../../utils/user';
+import { createToken, hashPassword  } from '../../utils/authenticate';
+import { addUser } from '../../middlewares/user';
+import { verifyUniqueUser } from '../../middlewares/authenticate';
 import { failAction }  from "../../utils/common";
 
 exports.plugin = {
@@ -26,7 +27,7 @@ exports.plugin = {
                     payload: createUserSchema,
                     failAction,
                 },
-                tags: ['api'],
+                tags: ['api','authenticate'],
                 description: 'Register a new user',
                 notes: 'Returns the token for the new user',
                 response: {

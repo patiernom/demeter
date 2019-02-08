@@ -4,7 +4,7 @@ import Joi from "joi";
 
 import { userSchema } from '../../schemas/user';
 import { headersSchema } from '../../schemas/authenticate';
-import { getUserByUsername } from '../../utils/user';
+import { getUserByUsername } from '../../middlewares/user';
 import { failAction } from "../../utils/common";
 
 exports.plugin = {
@@ -19,7 +19,7 @@ exports.plugin = {
                     strategy: 'jwt',
                     scope: ['admin']
                 },
-                tags: ['api'],
+                tags: ['api','user'],
                 description: 'Get the detail of the user',
                 notes: 'Returns the details of the users if your scope is admin',
                 response: {
@@ -36,8 +36,6 @@ exports.plugin = {
             },
             handler: async (request, h) => {
                 const user = await getUserByUsername(request, request.params.username);
-
-                console.log('user', user);
 
                 return h
                     .response(user)

@@ -1,9 +1,6 @@
 'use strict';
 
-import Boom from 'boom';
-import bcrypt from 'bcrypt';
 import { path, omit } from "ramda";
-
 
 const getUserById = async (request, id) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);

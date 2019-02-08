@@ -5,7 +5,7 @@ import glob from 'glob';
 import { concat, forEach } from 'ramda';
 
 import pkg from '../package';
-import { validate } from './utils/user';
+import { validate } from './middlewares/user';
 
 const server = Hapi.server({
     port: 3000,
@@ -17,6 +17,9 @@ const swaggerOptions = {
         title: 'Demeter API Documentation',
         version: pkg.version,
     },
+    basePath: "/api/",
+    grouping: "tags",
+    tags:[{ name: "user" }, { name:"authenticate" }, { name:"menu" }]
 };
 
 const plugins = [
