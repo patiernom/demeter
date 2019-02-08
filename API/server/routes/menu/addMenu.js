@@ -5,7 +5,7 @@ import Boom from 'boom';
 import { createMenuSchema, newMenuSchema } from '../../schemas/menu';
 import { addMenu } from '../../middlewares/menu';
 import { failAction }  from "../../utils/common";
-import {headersSchema} from "../../schemas/authenticate";
+import { headersSchema } from "../../schemas/authenticate";
 
 exports.plugin = {
     name: 'addMenu',
@@ -31,8 +31,10 @@ exports.plugin = {
             handler: async (request, h) => {
                 const menu = await addMenu(request);
 
+                console.log('menu', menu);
+
                 if (!menu) {
-                    throw Boom.badImplementation("User not created");
+                    throw Boom.badImplementation("menu not created");
                 }
 
                 // If the user is saved successfully, issue a JWT

@@ -9,7 +9,7 @@ import { failAction }  from "../../utils/common";
 import { headersSchema } from "../../schemas/authenticate";
 
 exports.plugin = {
-    name: 'gino',
+    name: 'addDish',
     version: '1.0.0',
     register: async (server, options) => {
         server.route({
@@ -39,6 +39,8 @@ exports.plugin = {
                 if (!menu) {
                     throw Boom.badImplementation("User not created");
                 }
+
+                console.log('menu', menu);
 
                 // If the user is saved successfully, issue a JWT
                 return h

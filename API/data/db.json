@@ -40,6 +40,15 @@
         "dish 1",
         "dish 2"
       ]
+    },
+    {
+      "id": "a247ddb774742713c138",
+      "idUser": "837e5b422a5b2d624cf4",
+      "name": "test 10",
+      "dishes": [
+        "carbonara",
+        "cotoletta"
+      ]
     }
   ]
 }
