@@ -3,14 +3,27 @@
 import Menu from '../models/Menu'
 import { omit, path } from "ramda";
 
-const getMenu = async (request) => {
+const getMenuById = async (request) => {
+    const { db } = path(['server', 'plugins', 'lowdb'], request);
+    const { id: idUser } = path(['auth', 'credentials'], request);
+    const { idMenu } = request.params;
+
+    const menu = await db
+        .get('menus')
+        .find((item) => item.id === idMenu && item.idUser === idUser)
+        .value();
+
+    return omit(['idUser'], menu);
+};
+
+const getMenus = async (request) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
     const { id: idUser } = path(['auth', 'credentials'], request);
 
     return db
         .get('menus')
         .filter(menu => menu.idUser === idUser)
-        .map((menu) => omit(['idUser'], menu))
+        .map((menu) => omit(['idUser', 'dishes'], menu))
         .value();
 };
 
@@ -51,7 +64,8 @@ const addDish = async (request) => {
 };
 
 export {
-    getMenu,
+    getMenuById,
+    getMenus,
     addMenu,
     addDish
 };

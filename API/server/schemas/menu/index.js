@@ -1,14 +1,12 @@
 'use strict';
-import menuSchema from "./menu";
+import menusSchema from "./menus";
 import createMenuSchema from "./createMenu";
-import newMenuSchema from "./newMenu";
 import addDishSchema from "./addDish";
 import menuDetailSchema from "./menuDetail";
 
 export {
-    menuSchema,
+    menusSchema,
     createMenuSchema,
-    newMenuSchema,
     addDishSchema,
     menuDetailSchema,
 }

@@ -2,7 +2,7 @@
 
 import Boom from 'boom';
 
-import { createMenuSchema, newMenuSchema } from '../../schemas/menu';
+import { createMenuSchema } from '../../schemas/menu';
 import { addMenu } from '../../middlewares/menu';
 import { failAction }  from "../../utils/common";
 import { headersSchema } from "../../schemas/authenticate";
@@ -17,21 +17,15 @@ exports.plugin = {
             config: {
                 tags: ['api','menu'],
                 description: 'Add a new menu',
-                notes: 'Returns the the id of the new menu for the logged user',
+                notes: 'Returns the the id of the new menu',
                 validate: {
                     headers: headersSchema,
                     payload: createMenuSchema,
                     failAction,
-                },
-                response: {
-                    schema: newMenuSchema,
-                    failAction,
-                },
+                }
             },
             handler: async (request, h) => {
                 const menu = await addMenu(request);
-
-                console.log('menu', menu);
 
                 if (!menu) {
                     throw Boom.badImplementation("menu not created");
@@ -39,10 +33,11 @@ exports.plugin = {
 
                 // If the user is saved successfully, issue a JWT
                 return h
-                    .response({ id_menu: menu })
+                    //.response({ id_menu: menu })
                     .type('application/json')
                     .header("authorization", request.headers.authorization)
-                    .code(201);
+                    //.header("location", request.headers.authorization)
+                    .code(204);
 
             },
         });

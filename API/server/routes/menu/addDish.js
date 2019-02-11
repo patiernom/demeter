@@ -3,7 +3,7 @@
 import Boom from 'boom';
 import Joi from "joi";
 
-import { addDishSchema, menuDetailSchema } from '../../schemas/menu';
+import { addDishSchema } from '../../schemas/menu';
 import { addDish } from '../../middlewares/menu';
 import { failAction }  from "../../utils/common";
 import { headersSchema } from "../../schemas/authenticate";
@@ -27,11 +27,6 @@ exports.plugin = {
                     payload: addDishSchema,
                     failAction,
                 },
-
-                response: {
-                    schema: menuDetailSchema,
-                    failAction,
-                },
             },
             handler: async (request, h) => {
                 const menu = await addDish(request);
@@ -40,14 +35,12 @@ exports.plugin = {
                     throw Boom.badImplementation("User not created");
                 }
 
-                console.log('menu', menu);
-
                 // If the user is saved successfully, issue a JWT
                 return h
-                    .response(menu)
                     .type('application/json')
                     .header("authorization", request.headers.authorization)
-                    .code(201);
+                    //.header("location", request.headers.authorization)
+                    .code(204);
 
             },
         });

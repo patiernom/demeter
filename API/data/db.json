@@ -29,6 +29,13 @@
       "password": "$2b$10$hBp2F78dpQ1FenMVOK5CIe81d/lE3G16I6cTpjg/QBawQeA3x3jpO",
       "email": "asdasd@blabla.com",
       "admin": false
+    },
+    {
+      "id": "688d0f51b7c523cdef3c",
+      "username": "cretino2",
+      "password": "$2b$10$.LY/PKqNqo0.hq9NqGE5juo818xTxf.ZsQ2uQCACW0ybzEPS1R9c6",
+      "email": "asdasdasdasd@blabla.com",
+      "admin": false
     }
   ],
   "menus": [

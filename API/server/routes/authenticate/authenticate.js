@@ -38,7 +38,7 @@ exports.plugin = {
                     .response({ id_token: createToken(request.pre.user) })
                     .type('application/json')
                     .header("authorization", request.headers.authorization)
-                    .code(201);
+                    .code(200);
             },
         });
     }
