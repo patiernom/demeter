@@ -54,13 +54,13 @@ const addDish = async (request) => {
 
     menu.dishes.push(name);
 
-    const newMenu = await db
+    const updatedMenu = await db
         .get('menus')
         .find((item) => item.id === idMenu && item.idUser === idUser)
         .assign(menu)
         .write();
 
-    return omit(['idUser'], newMenu);
+    return updatedMenu.id;
 };
 
 export {

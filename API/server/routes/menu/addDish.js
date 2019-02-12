@@ -5,8 +5,8 @@ import Joi from "joi";
 
 import { addDishSchema } from '../../schemas/menu';
 import { addDish } from '../../middlewares/menu';
-import { failAction }  from "../../utils/common";
-import { headersSchema } from "../../schemas/authenticate";
+import { failAction }  from '../../utils/common';
+import { headersSchema } from '../../schemas/authenticate';
 
 exports.plugin = {
     name: 'addDish',
@@ -27,19 +27,24 @@ exports.plugin = {
                     payload: addDishSchema,
                     failAction,
                 },
+                response: {
+                    status: {
+                        204: Joi.any(),
+                    },
+                    failAction,
+                },
             },
             handler: async (request, h) => {
                 const menu = await addDish(request);
 
                 if (!menu) {
-                    throw Boom.badImplementation("User not created");
+                    throw Boom.badImplementation('Menu not updated');
                 }
 
-                // If the user is saved successfully, issue a JWT
                 return h
+                    .response()
                     .type('application/json')
-                    .header("authorization", request.headers.authorization)
-                    //.header("location", request.headers.authorization)
+                    .header('authorization', request.headers.authorization)
                     .code(204);
 
             },

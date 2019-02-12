@@ -2,10 +2,10 @@
 
 import Boom from 'boom';
 
-import { createMenuSchema } from '../../schemas/menu';
+import { createMenuSchema, newMenuSchema } from '../../schemas/menu';
 import { addMenu } from '../../middlewares/menu';
-import { failAction }  from "../../utils/common";
-import { headersSchema } from "../../schemas/authenticate";
+import { failAction }  from '../../utils/common';
+import { headersSchema } from '../../schemas/authenticate';
 
 exports.plugin = {
     name: 'addMenu',
@@ -22,22 +22,33 @@ exports.plugin = {
                     headers: headersSchema,
                     payload: createMenuSchema,
                     failAction,
-                }
+                },
+                response: {
+                    status: {
+                        201: newMenuSchema,
+                    },
+                    failAction,
+                },
             },
             handler: async (request, h) => {
                 const menu = await addMenu(request);
 
                 if (!menu) {
-                    throw Boom.badImplementation("menu not created");
+                    throw Boom.badImplementation('menu not created');
                 }
 
-                // If the user is saved successfully, issue a JWT
+                const url = `http://localhost:3000${request.route.path.replace('add', menu)}`;
+
                 return h
-                    //.response({ id_menu: menu })
+                    .response({
+                        message: 'Successful Created new Menu',
+                        id_menu: menu,
+                        uri: url
+                    })
                     .type('application/json')
-                    .header("authorization", request.headers.authorization)
-                    //.header("location", request.headers.authorization)
-                    .code(204);
+                    .header('authorization', request.headers.authorization)
+                    .header('location', url)
+                    .code(201);
 
             },
         });

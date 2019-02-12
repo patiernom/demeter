@@ -2,6 +2,7 @@
 import menusSchema from "./menus";
 import createMenuSchema from "./createMenu";
 import addDishSchema from "./addDish";
+import newMenuSchema from "./newMenu";
 import menuDetailSchema from "./menuDetail";
 
 export {
@@ -9,4 +10,5 @@ export {
     createMenuSchema,
     addDishSchema,
     menuDetailSchema,
+    newMenuSchema,
 }
