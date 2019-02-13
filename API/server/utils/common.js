@@ -10,8 +10,10 @@ const failAction = async (request, h, err) => {
 };
 
 const getLowDB = (request) => path(['server', 'plugins', 'lowdb'], request);
+const getAuthenticatedUser = (request) => path(['auth', 'credentials'], request);
 
 export {
     failAction,
-    getLowDB
+    getLowDB,
+    getAuthenticatedUser
 }
