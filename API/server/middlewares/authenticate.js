@@ -2,14 +2,14 @@ import { path } from "ramda";
 import Boom from "boom";
 import bcrypt from "bcrypt";
 
-const verifyUniqueUser = (request, h) => {
+import { findUserByUserOrEmail } from '../db/user';
+
+const verifyUniqueUser = async (request, h) => {
     // Find an entry from the database that
     // matches either the email or username
     const { db } = path(['server', 'plugins', 'lowdb'], request);
 
-    const user = db.get('users')
-        .find((user) => user.email === request.payload.email || user.username === request.payload.username)
-        .value();
+    const user = await findUserByUserOrEmail(db, request.payload.username, request.payload.email);
 
     // Check whether the username or email
     // is already taken and error out if so
@@ -26,16 +26,14 @@ const verifyUniqueUser = (request, h) => {
     return h.response(request.payload);
 };
 
-const verifyCredentials = (request, h) => {
+const verifyCredentials = async (request, h) => {
     const password = request.payload.password;
 
     // Find an entry from the database that
     // matches either the email or username
     const { db } = path(['server', 'plugins', 'lowdb'], request);
 
-    const user = db.get('users')
-        .find((user) => user.email === request.payload.email || user.username === request.payload.username)
-        .value();
+    const user = await findUserByUserOrEmail(db, request.payload.username, request.payload.email);
 
     if (user) {
         return bcrypt

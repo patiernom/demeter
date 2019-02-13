@@ -3,15 +3,13 @@
 import Menu from '../models/Menu'
 import { omit, path } from "ramda";
 
+import { findMenuById, findMenus, createMenu, updateMenu } from '../db/menu';
+
 const getMenuById = async (request) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
-    const { id: idUser } = path(['auth', 'credentials'], request);
     const { idMenu } = request.params;
 
-    const menu = await db
-        .get('menus')
-        .find((item) => item.id === idMenu && item.idUser === idUser)
-        .value();
+    const menu = await findMenuById(db, idMenu);
 
     return omit(['idUser'], menu);
 };
@@ -20,11 +18,7 @@ const getMenus = async (request) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
     const { id: idUser } = path(['auth', 'credentials'], request);
 
-    return db
-        .get('menus')
-        .filter(menu => menu.idUser === idUser)
-        .map((menu) => omit(['idUser', 'dishes'], menu))
-        .value();
+    return findMenus(db, idUser);
 };
 
 const addMenu = async (request) => {
@@ -32,33 +26,21 @@ const addMenu = async (request) => {
     const { id: idUser } = path(['auth', 'credentials'], request);
     const newMenu = new Menu(request.payload.name, idUser);
 
-    const menu = await db
-        .get('menus')
-        .push(newMenu)
-        .last()
-        .write();
+    const menu = await createMenu(db, newMenu);
 
     return menu.id;
 };
 
 const addDish = async (request) => {
     const { db } = path(['server', 'plugins', 'lowdb'], request);
-    const { id: idUser } = path(['auth', 'credentials'], request);
     const { name } = request.payload;
     const { idMenu } = request.params;
 
-    const menu = await db
-        .get('menus')
-        .find((item) => item.id === idMenu && item.idUser === idUser)
-        .value();
+    const menu = await findMenuById(db, idMenu);
 
     menu.dishes.push(name);
 
-    const updatedMenu = await db
-        .get('menus')
-        .find((item) => item.id === idMenu && item.idUser === idUser)
-        .assign(menu)
-        .write();
+    const updatedMenu = await updateMenu(db, menu);
 
     return updatedMenu.id;
 };

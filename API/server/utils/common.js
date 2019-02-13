@@ -1,4 +1,5 @@
 import Boom from 'boom';
+import { path } from "ramda";
 
 const failAction = async (request, h, err) => {
     if (err) {
@@ -8,6 +9,9 @@ const failAction = async (request, h, err) => {
     }
 };
 
+const getLowDB = (request) => path(['server', 'plugins', 'lowdb'], request);
+
 export {
-    failAction
+    failAction,
+    getLowDB
 }

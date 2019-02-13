@@ -1,43 +1,36 @@
 'use strict';
 
 import Boom from "boom";
-import { path, omit } from "ramda";
+import { omit } from "ramda";
 import User from "../models/User";
 import { hashPassword } from "../utils/authenticate";
+import { getLowDB } from "../utils/common";
+import { findUserById, findUserByUsername, findAllUsers, createUser } from '../db/user';
 
 const getUserById = async (request, id) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], request);
+    const { db } = getLowDB(request);
 
-    const user = await db
-        .get('users')
-        .find(user => user.id === id)
-        .value();
+    const user = await findUserById(db, id);
 
     return omit(['password'], user);
 };
 
 const getUserByUsername = async (request, username) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], request);
+    const { db } = getLowDB(request);
 
-    const user = await db
-        .get('users')
-        .find(user => user.username === username)
-        .value();
+    const user = await findUserByUsername(db, username);
 
     return omit(['password'], user);
 };
 
 const getUsersList = async (request) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], request);
+    const { db } = getLowDB(request);
 
-    return db
-        .get('users')
-        .map((user) => omit(['password'], user))
-        .value();
+    return findAllUsers(db);
 };
 
 const addUser = async (request) => {
-    const { db } = path(['server', 'plugins', 'lowdb'], request);
+    const { db } = getLowDB(request);
 
     let newUser = new User();
     newUser.email = request.payload.email;
@@ -50,11 +43,7 @@ const addUser = async (request) => {
         throw Boom.badRequest(err);
     }
 
-    const user = await db
-        .get('users')
-        .push(newUser)
-        .last()
-        .write();
+    const user = await createUser(db, newUser);
 
     return user.id;
 };
